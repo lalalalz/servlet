@@ -13,6 +13,8 @@ public class HelloServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        StringBuffer requestURL = request.getRequestURL();
+        System.out.println("requestURL = " + requestURL);
         response.getWriter().write("hello");
 
     }
