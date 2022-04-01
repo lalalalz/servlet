@@ -8,8 +8,8 @@ import hello.servlet.web.frontcontroller.v3.controller.MemberSaveControllerV3;
 import hello.servlet.web.frontcontroller.v4.controller.MemberFormControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberListControllerV4;
 import hello.servlet.web.frontcontroller.v4.controller.MemberSaveControllerV4;
-import hello.servlet.web.frontcontroller.v5.adapter.ControllerV3HandlerAdapter;
-import hello.servlet.web.frontcontroller.v5.adapter.ControllerV4HandlerAdapter;
+import hello.servlet.web.frontcontroller.v5.adapter.ControllerV3MyHandlerAdapter;
+import hello.servlet.web.frontcontroller.v5.adapter.ControllerV4MyHandlerAdapter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class FrontControllerV5 extends HttpServlet {
 
     private Map<String, Object> handlerMappingMap = new HashMap<>();
-    private List<HandlerAdapter> handlerAdapters = new ArrayList<>();
+    private List<MyHandlerAdapter> myHandlerAdapters = new ArrayList<>();
 
     public FrontControllerV5() {
         initHandlerMappingMap();
@@ -43,8 +43,8 @@ public class FrontControllerV5 extends HttpServlet {
             return;
         }
 
-        HandlerAdapter handlerAdapter = getHandlerAdapter(handler);
-        ModelView modelView = handlerAdapter.handle(request, response, handler);
+        MyHandlerAdapter myHandlerAdapter = getHandlerAdapter(handler);
+        ModelView modelView = myHandlerAdapter.handle(request, response, handler);
 
         MyView myView = viewResolver(modelView.getViewName());
         myView.render(modelView.getModel(), request, response);
@@ -54,10 +54,10 @@ public class FrontControllerV5 extends HttpServlet {
         return new MyView("/WEB-INF/views/" + viewName + ".jsp");
     }
 
-    private HandlerAdapter getHandlerAdapter(Object handler) {
-        for (HandlerAdapter handlerAdapter : handlerAdapters) {
-            if (handlerAdapter.supports(handler)) {
-                return handlerAdapter;
+    private MyHandlerAdapter getHandlerAdapter(Object handler) {
+        for (MyHandlerAdapter myHandlerAdapter : myHandlerAdapters) {
+            if (myHandlerAdapter.supports(handler)) {
+                return myHandlerAdapter;
             }
         }
         throw new IllegalArgumentException("handler Adapter를 찾을 수 없습니다. handler=" + handler);
@@ -69,8 +69,8 @@ public class FrontControllerV5 extends HttpServlet {
     }
 
     private void initHandlerAdapters() {
-        handlerAdapters.add(new ControllerV3HandlerAdapter());
-        handlerAdapters.add(new ControllerV4HandlerAdapter());
+        myHandlerAdapters.add(new ControllerV3MyHandlerAdapter());
+        myHandlerAdapters.add(new ControllerV4MyHandlerAdapter());
     }
 
     private void initHandlerMappingMap() {
